@@ -92,9 +92,6 @@ function scene2 () {
         . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
         `, [myTiles.transparency16,sprites.castle.tilePath1,sprites.castle.tilePath2,sprites.castle.tilePath3,sprites.castle.tilePath5,sprites.castle.tilePath4,sprites.castle.tilePath8,sprites.castle.tilePath7,sprites.vehicle.roadTurn4,sprites.vehicle.roadHorizontal,sprites.vehicle.roadTurn3,sprites.vehicle.roadVertical,sprites.vehicle.roadIntersection1,sprites.vehicle.roadTurn1,sprites.vehicle.roadTurn2,sprites.vehicle.roadIntersection3,sprites.castle.tileGrass2,sprites.castle.tileGrass1,sprites.castle.tileGrass3,sprites.castle.tileDarkGrass2,sprites.castle.tileDarkGrass3,sprites.castle.tileDarkGrass1,sprites.builtin.forestTiles0,sprites.dungeon.hazardLava0,sprites.dungeon.hazardSpike,sprites.builtin.forestTiles1,sprites.builtin.forestTiles2,sprites.dungeon.floorDark0,sprites.dungeon.floorDark3,sprites.dungeon.floorDark4,sprites.dungeon.floorDarkDiamond,sprites.dungeon.floorDark5,sprites.dungeon.floorDark1,sprites.dungeon.chestClosed,sprites.dungeon.hazardLava1], TileScale.Sixteen))
 }
-scene.onOverlapTile(SpriteKind.Player, myTiles.transparency16, function (sprite, location) {
-	
-})
 function createCar () {
     car = sprites.create(img`
         . . . . . . . . . . . . . . . . 
@@ -116,7 +113,7 @@ function createCar () {
         `, SpriteKind.Player)
     controller.moveSprite(car, 100, 100)
     scene.cameraFollowSprite(car)
-    mySprite = sprites.create(img`
+    subCar = sprites.create(img`
         . . . . . . . . . . . . . . . . 
         . . . . . . 6 6 6 6 6 6 6 6 . . 
         . . . . . 6 c 6 6 6 6 6 6 9 6 . 
@@ -134,27 +131,24 @@ function createCar () {
         . . . . f f f f . . . . f f f . 
         . . . . . . . . . . . . . . . . 
         `, SpriteKind.Player)
-    mySprite.follow(car, 70)
+    subCar.follow(car, 70)
 }
-scene.onOverlapTile(SpriteKind.Player, sprites.vehicle.roadHorizontal, function (sprite, location) {
-	
-})
 function init () {
     music.setVolume(10)
 }
-controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
-    music.playMelody("C D E F G A B C5 ", 750)
-    mySprite.say("まって～")
+scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.hazardSpike, function (sprite, location) {
+    game.over(true, effects.hearts)
 })
-scene.onOverlapTile(SpriteKind.Player, sprites.castle.tileGrass1, function (sprite, location) {
-	
+controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
+    subCar.say("まって～", 2000)
+    music.playMelody("C D E F G A B C5 ", 750)
 })
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     controller.moveSprite(car, 200, 200)
     music.siren.playUntilDone()
     controller.moveSprite(car, 100, 100)
 })
-let mySprite: Sprite = null
+let subCar: Sprite = null
 let car: Sprite = null
 let kei: Sprite = null
 init()
@@ -240,43 +234,85 @@ game.onUpdate(function () {
             . . . . . e 2 2 2 2 2 2 e . . . 
             `)
     }
-    if (mySprite.vx < 0) {
-        mySprite.setImage(img`
-            . . . . . . . . . . . . . . . . 
-            . . . . . . 6 6 6 6 6 6 6 6 . . 
-            . . . . . 6 c 6 6 6 6 6 6 9 6 . 
-            . . . . 6 c c 6 6 6 6 6 6 9 c 6 
-            . . d 6 9 c c 6 9 9 9 9 9 9 c c 
-            . d 6 6 9 c b 8 8 8 8 8 8 8 6 c 
-            . 6 6 6 9 b 8 8 b b b 8 b b 8 6 
-            . 6 6 6 6 6 8 b b b b 8 b b b 8 
-            . 6 6 6 6 8 6 6 6 6 6 8 6 6 6 8 
-            . 6 d d 6 8 f 8 8 8 f 8 8 8 8 8 
-            . d d 6 8 8 8 f 8 8 f 8 8 8 8 8 
-            . 8 8 8 8 8 8 8 f f f 8 8 8 8 8 
-            . 8 8 8 8 f f f 8 8 8 8 f f f f 
-            . . . 8 f f f f f 8 8 f f f f f 
-            . . . . f f f f . . . . f f f . 
-            . . . . . . . . . . . . . . . . 
-            `)
-    } else if (mySprite.vx > 0) {
-        mySprite.setImage(img`
-            . . . . . . . . . . . . . . . . 
-            . . . . 6 6 6 6 6 6 6 6 . . . . 
-            . . . 6 9 6 6 6 6 6 6 c 6 . . . 
-            . . 6 c 9 6 6 6 6 6 6 c c 6 . . 
-            . 6 c c 9 9 9 9 9 9 6 c c 9 6 d 
-            . 6 c 6 8 8 8 8 8 8 8 b c 9 6 6 
-            . 6 6 8 b b 8 b b b 8 8 b 9 6 6 
-            . 6 8 b b b 8 b b b b 8 6 6 6 6 
-            . 8 8 6 6 6 8 6 6 6 6 6 8 6 6 6 
-            . 8 8 8 8 8 8 f 8 8 8 f 8 6 d d 
-            . 8 8 8 8 8 8 f 8 8 f 8 8 8 6 d 
-            . 8 8 8 8 8 8 f f f 8 8 8 8 8 8 
-            . 8 f f f f 8 8 8 8 f f f 8 8 8 
-            . . f f f f f 8 8 f f f f f 8 . 
-            . . . f f f . . . . f f f f . . 
-            . . . . . . . . . . . . . . . . 
-            `)
+    if (Math.abs(subCar.vx) > Math.abs(subCar.vy)) {
+        if (subCar.vx < 0) {
+            subCar.setImage(img`
+                . . . . . . . . . . . . . . . . 
+                . . . . . . 6 6 6 6 6 6 6 6 . . 
+                . . . . . 6 c 6 6 6 6 6 6 9 6 . 
+                . . . . 6 c c 6 6 6 6 6 6 9 c 6 
+                . . d 6 9 c c 6 9 9 9 9 9 9 c c 
+                . d 6 6 9 c b 8 8 8 8 8 8 8 6 c 
+                . 6 6 6 9 b 8 8 b b b 8 b b 8 6 
+                . 6 6 6 6 6 8 b b b b 8 b b b 8 
+                . 6 6 6 6 8 6 6 6 6 6 8 6 6 6 8 
+                . 6 d d 6 8 f 8 8 8 f 8 8 8 8 8 
+                . d d 6 8 8 8 f 8 8 f 8 8 8 8 8 
+                . 8 8 8 8 8 8 8 f f f 8 8 8 8 8 
+                . 8 8 8 8 f f f 8 8 8 8 f f f f 
+                . . . 8 f f f f f 8 8 f f f f f 
+                . . . . f f f f . . . . f f f . 
+                . . . . . . . . . . . . . . . . 
+                `)
+        } else if (subCar.vx > 0) {
+            subCar.setImage(img`
+                . . . . . . . . . . . . . . . . 
+                . . . . 6 6 6 6 6 6 6 6 . . . . 
+                . . . 6 9 6 6 6 6 6 6 c 6 . . . 
+                . . 6 c 9 6 6 6 6 6 6 c c 6 . . 
+                . 6 c c 9 9 9 9 9 9 6 c c 9 6 d 
+                . 6 c 6 8 8 8 8 8 8 8 b c 9 6 6 
+                . 6 6 8 b b 8 b b b 8 8 b 9 6 6 
+                . 6 8 b b b 8 b b b b 8 6 6 6 6 
+                . 8 8 6 6 6 8 6 6 6 6 6 8 6 6 6 
+                . 8 8 8 8 8 8 f 8 8 8 f 8 6 d d 
+                . 8 8 8 8 8 8 f 8 8 f 8 8 8 6 d 
+                . 8 8 8 8 8 8 f f f 8 8 8 8 8 8 
+                . 8 f f f f 8 8 8 8 f f f 8 8 8 
+                . . f f f f f 8 8 f f f f f 8 . 
+                . . . f f f . . . . f f f f . . 
+                . . . . . . . . . . . . . . . . 
+                `)
+        }
+    } else {
+        if (subCar.vy < 0) {
+            subCar.setImage(img`
+                . . . . . . 8 8 c c 8 8 . . . . 
+                . . . . . 8 6 6 6 6 6 6 8 . . . 
+                . . . . 6 c 6 6 6 6 6 6 c 6 . . 
+                . . . 8 6 c 9 6 6 6 6 6 c 6 8 . 
+                . . . f 6 6 9 6 6 6 6 6 c 6 f . 
+                . . . f 6 6 9 6 6 6 6 6 6 6 f . 
+                . . . f 6 6 9 6 6 6 6 6 6 6 f . 
+                . . . f 6 c 6 9 9 6 6 6 c 6 f . 
+                . . . 8 6 c 8 c c c c 8 c 6 8 . 
+                . . . 8 6 8 c b b b b c 8 6 8 . 
+                . . . 8 6 8 b b b b b b 8 6 8 . 
+                . . . 8 8 8 8 8 8 8 8 8 8 8 8 . 
+                . . . f 8 d 8 8 8 8 8 8 d 8 f . 
+                . . . f 8 6 d 8 8 8 8 d 6 8 f . 
+                . . . f f 8 8 8 8 8 8 8 8 f f . 
+                . . . . f f . . . . . . f f . . 
+                `)
+        } else if (subCar.vy > 0) {
+            subCar.setImage(img`
+                . . . . . . . . . . . . . . . . 
+                . . . . . . 6 6 6 6 6 6 . . . . 
+                . . . . . 6 6 9 9 6 6 6 6 . . . 
+                . . . . . c 9 6 6 6 6 6 c . . . 
+                . . . . 6 c 9 6 6 6 6 6 c 6 . . 
+                . . . 8 6 c 9 6 6 6 6 6 c 6 8 . 
+                . . . f 6 c 9 6 6 6 6 6 c 6 f . 
+                . . . f 8 c 6 6 6 6 6 6 c 8 f . 
+                . . . f 6 c 6 b b b b 6 c 6 f . 
+                . . . 8 6 6 b c c c c b 6 6 8 . 
+                . . . 8 8 b c c c c c c b 8 8 . 
+                . . . f 8 9 9 9 9 9 9 9 9 8 f . 
+                . . . f 8 d 6 6 6 6 6 6 d 8 f . 
+                . . . . 6 d d 6 6 6 6 d d 6 f . 
+                . . . . f 6 d 6 6 6 6 d 6 f . . 
+                . . . . . 8 6 6 6 6 6 6 8 . . . 
+                `)
+        }
     }
 })
