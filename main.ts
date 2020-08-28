@@ -131,10 +131,11 @@ function createCar () {
         . . . . f f f f . . . . f f f . 
         . . . . . . . . . . . . . . . . 
         `, SpriteKind.Player)
+    subCar.setPosition(160, 120)
     subCar.follow(car, 70)
 }
 function init () {
-    music.setVolume(10)
+    music.setVolume(255)
 }
 scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.hazardSpike, function (sprite, location) {
     game.over(true, effects.hearts)
@@ -145,6 +146,7 @@ controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
 })
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     controller.moveSprite(car, 200, 200)
+    car.startEffect(effects.fire, 2000)
     music.siren.playUntilDone()
     controller.moveSprite(car, 100, 100)
 })
